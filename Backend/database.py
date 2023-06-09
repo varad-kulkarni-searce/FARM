@@ -6,7 +6,7 @@ from model import Todo
 # find(), find_one(), insert_one() are mongodb methods.
 import motor.motor_asyncio
 
-client = motor.motor_asyncio.AsyncIOMotorClient('mongodb: //localhost:27017')
+client = motor.motor_asyncio.AsyncIOMotorClient('mongodb://localhost:27017')
 
 # create a database
 database = client.TodoList
