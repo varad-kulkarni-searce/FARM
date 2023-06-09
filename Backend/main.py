@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from database import *
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 # Instantiating fastapi class by creating an object called "app"
@@ -24,12 +25,16 @@ def readRoot():
 
 @app.get("/api/todo")
 async def getTodo():
-    return 1
+    response = await fetchAllTodos()
+    return response
 
 
-@app.get("/api/todo{id}")
-async def getTodoById(id):
-    return 1
+@app.get("/api/todo{title}", response_model=Todo)
+async def getTodoById(title):
+    response = await fetchOneTodo(title)
+    if response:
+        return response
+    raise HTTPException("404", "There is no todo item with this title {title}")
 
 
 @app.post("/api/todo")
