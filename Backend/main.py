@@ -34,19 +34,29 @@ async def getTodoById(title):
     response = await fetchOneTodo(title)
     if response:
         return response
-    raise HTTPException("404", "There is no todo item with this title {title}")
+    raise HTTPException(404, "There is no todo item with this title {title}")
 
 
-@app.post("/api/todo")
-async def postTodo(todo):
-    return 1
+@app.post("/api/todo", response_model=Todo)
+async def postTodo(todo: Todo):
+    # converting "todo" json to dictionary
+    response = await createTodo(todo.dict())
+    if response:
+        return response
+    raise HTTPException(400, "Something went wrong / Bad request")
 
 
-@app.put("/api/todo{id}")
-async def putTodo(id, data):
-    return 1
+@app.put("/api/todo{title}/", response_model=Todo)
+async def putTodo(title: str, description: str):
+    response = await updateTodo(title, description)
+    if response:
+        return response
+    raise HTTPException(404, f"There is no Todo item with this title {title}")
 
 
-@app.delete("/api/todo{id}")
-async def deleteTodo(id):
-    return 1
+@app.delete("/api/todo{title}")
+async def deleteTodo(title: str):
+    response = await removeTodo(title)
+    if response:
+        return "Successfully deleted Todo item"
+    raise HTTPException(404, f"There is no Todo item with this title {title}")
